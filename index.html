@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Visualization Platform</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+
+<body>
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-content">
+      <div class="logo">
+        <span class="logo-icon">📊</span>
+        <span class="logo-text">Data Visualization Platform</span>
+      </div>
+
+      <div class="nav-controls">
+        <div class="file-upload-container">
+          <button class="file-upload-btn" onclick="document.getElementById('fileInput').click()">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+            </svg>
+            Upload File
+          </button>
+          <input type="file" id="fileInput" accept=".csv,.json" />
+        </div>
+
+        <div class="visualization-toggle">
+          <button class="toggle-btn active" data-type="tree">Tree</button>
+          <button class="toggle-btn" data-type="graph">Graph</button>
+        </div>
+
+        <select class="sub-type-select" id="treeTypeSelect">
+          <option value="horizontal">Horizontal Tree</option>
+          <option value="radial">Radial Tree</option>
+        </select>
+
+        <select class="sub-type-select" id="graphTypeSelect" style="display: none;">
+          <option value="force">Force-Directed</option>
+          <option value="circular">Circular</option>
+          <!-- <option value="matrix">Matrix</option> -->
+        </select>
+
+        <div class="export-dropdown">
+          <button class="export-btn" id="exportBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+            </svg>
+            Export
+          </button>
+          <div class="export-menu" id="exportMenu">
+            <div class="export-option" data-format="svg">
+              <span>��</span>
+              <span>Export as SVG</span>
+            </div>
+            <div class="export-option" data-format="png">
+              <span>🖼️</span>
+              <span>Export as PNG</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-content">
+        <div class="control-section">
+          <div class="section-header">
+            <div class="section-icon">🎨</div>
+            <div class="section-title">Visual Style</div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Node Color</label>
+            <input type="color" class="color-picker" id="nodeColor" value="#555555">
+          </div>
+          <div class="control-group">
+            <label class="control-label">Node Size</label>
+            <div class="range-container">
+              <input type="range" class="range-input" id="nodeSize" min="2" max="8" value="2.5">
+              <div class="range-value" id="nodeSizeValue">2.5</div>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label">Link Color</label>
+            <input type="color" class="color-picker" id="linkColor" value="#555555">
+          </div>
+          <div class="control-group">
+            <label class="control-label">Link Width</label>
+            <div class="range-container">
+              <input type="range" class="range-input" id="linkWidth" min="0.5" max="3" step="0.1" value="1.5">
+              <div class="range-value" id="linkWidthValue">1.5</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-section">
+          <div class="section-header">
+            <div class="section-icon">⚙️</div>
+            <div class="section-title">Layout Settings</div>
+          </div>
+          <div class="control-group" id="treeParams">
+            <label class="control-label">Node Separation</label>
+            <div class="range-container">
+              <input type="range" class="range-input" id="treeSeparation" min="50" max="300" value="120">
+              <div class="range-value" id="treeSeparationValue">120</div>
+            </div>
+          </div>
+          <div class="control-group" id="graphParams" style="display: none;">
+            <label class="control-label">Force Strength</label>
+            <div class="range-container">
+              <input type="range" class="range-input" id="forceStrength" min="0.1" max="2" step="0.1" value="0.8">
+              <div class="range-value" id="forceStrengthValue">0.8</div>
+            </div>
+          </div>
+
+          <div class="control-group">
+
+            <button class="action-btn" id="resetViewBtn">
+              <span>🔄</span>
+              Reset View
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="visualization-wrapper">
+        <div class="loading" id="loading" style="display: none;">
+          <div class="spinner"></div>
+          <div class="loading-text">Processing data...</div>
+        </div>
+        <svg class="visualization-svg" id="visualizationSvg"></svg>
+      </div>
+    </main>
+  </div>
+
+  <!-- Tooltip -->
+  <div class="tooltip" id="tooltip"></div>
+
+  <script src="dataProcessor.js"></script>
+  <script src="treeRenderer.js"></script>
+  <script src="graphRenderer.js"></script>
+  <script src="exportHandler.js"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>
