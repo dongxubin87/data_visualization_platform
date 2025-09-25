@@ -1,4 +1,3 @@
-// main.js
 class VisualizationPlatform {
 
   constructor() {
@@ -7,7 +6,6 @@ class VisualizationPlatform {
     this.currentSubType = 'horizontal';
     this.highlightedNodes = new Set();
 
-    // Initialize modules
     this.dataProcessor = new DataProcessor();
     this.exportHandler = new ExportHandler();
 
@@ -24,19 +22,16 @@ class VisualizationPlatform {
 
 
   setupEventListeners() {
-    // File upload
     document.getElementById('fileInput').addEventListener('change', (e) => {
       this.handleFileUpload(e);
     });
 
-    // Visualization type toggle
     document.querySelectorAll('.toggle-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         this.switchVisualizationType(e.target.dataset.type);
       });
     });
 
-    // Sub-type selection
     document.getElementById('treeTypeSelect').addEventListener('change', (e) => {
       this.currentSubType = e.target.value;
       this.updateVisualization();
@@ -47,7 +42,6 @@ class VisualizationPlatform {
       this.updateVisualization();
     });
 
-    // Style controls
     document.getElementById('nodeColor').addEventListener('change', (e) => {
       this.updateNodeStyle('fill', e.target.value);
     });
@@ -66,7 +60,6 @@ class VisualizationPlatform {
       this.updateLinkStyle('stroke-width', e.target.value);
     });
 
-    // Reset view
     document.getElementById('resetViewBtn').addEventListener('click', () => {
       this.resetView();
     });
@@ -90,7 +83,6 @@ class VisualizationPlatform {
   }
 
   setupRangeInputs() {
-    // Update range value displays
     const rangeInputs = document.querySelectorAll('.range-input');
     rangeInputs.forEach(input => {
       const valueDisplay = input.parentElement.querySelector('.range-value');
@@ -137,12 +129,10 @@ class VisualizationPlatform {
   }
 
   updateVisualizationType() {
-    // Update button states
     document.querySelectorAll('.toggle-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.type === this.currentType);
     });
 
-    // Show/hide sub-type selects
     const treeSelect = document.getElementById('treeTypeSelect');
     const graphSelect = document.getElementById('graphTypeSelect');
     const treeParams = document.getElementById('treeParams');
@@ -263,12 +253,10 @@ class VisualizationPlatform {
   }
 }
 
-// Initialize platform when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
   window.platform = new VisualizationPlatform();
 });
 
-// Window resize handler
 window.addEventListener('resize', () => {
   if (window.platform && window.platform.currentData) {
     window.platform.updateVisualization();

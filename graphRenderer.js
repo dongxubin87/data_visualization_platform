@@ -191,10 +191,8 @@ class GraphRenderer {
 
     const g = this.svg.append('g');
 
-    // Color scale
     const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-    // Create simulation
     const links = graphData.links.map(d => ({ ...d }));
     const nodes = graphData.nodes.map(d => ({ ...d }));
 
@@ -233,11 +231,10 @@ class GraphRenderer {
         break;
     }
     simulation.alpha(1).restart();
-    simulation.alphaDecay(0.5).velocityDecay(0.4);
+    simulation.alphaDecay(0.2).velocityDecay(0.4);
 
     this.simulation = simulation;
 
-    // Draw links
     const link = g.append('g')
       .attr('stroke', document.getElementById('linkColor').value)
       .attr('stroke-opacity', 0.4)
@@ -247,7 +244,6 @@ class GraphRenderer {
       .attr('stroke-width', d => Math.sqrt(d.value || 1) * parseFloat(document.getElementById('linkWidth').value))
       .style('stroke-linecap', 'round');
 
-    // Draw nodes
     const node = g.append('g')
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
@@ -282,7 +278,6 @@ class GraphRenderer {
           d.fy = null;
         }));
 
-    // Add circles to nodes
     node.append('circle')
       .attr('r', +document.getElementById('nodeSize').value || 20)
       .attr('fill', d => color(d.group || d.id))
@@ -290,7 +285,6 @@ class GraphRenderer {
       .attr('stroke-width', 2)
       .style('filter', 'drop-shadow(0px 2px 4px rgba(0,0,0,0.3))');
 
-    // Add labels to nodes
     node.append('text')
       .attr('dy', -25)
       .attr('text-anchor', 'middle')
@@ -303,7 +297,6 @@ class GraphRenderer {
       .style('paint-order', 'stroke')
       .style('pointer-events', 'none');
 
-    // Update positions
     simulation.on('tick', () => {
       link
         .attr('x1', d => d.source.x)
@@ -314,7 +307,6 @@ class GraphRenderer {
       node.attr('transform', d => `translate(${d.x},${d.y})`);
     });
 
-    // Apply zoom transform
     this.svg.call(this.zoom);
   }
 

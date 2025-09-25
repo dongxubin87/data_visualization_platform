@@ -136,9 +136,9 @@ class TreeRenderer {
 
   collapse(d) {
     if (d.children) {
-      // d._children = d.children;
+      d._children = d.children;
       // d._children.forEach(this.collapse.bind(this));
-      // d.children = null;
+      d.children = null;
     }
   }
 
